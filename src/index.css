@@ -67,6 +67,25 @@ body {
 .leaflet-container {
   height: 100%;
   width: 100%;
+  z-index: 1;
+}
+
+/* Ensure dialogs appear above Leaflet maps */
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+}
+
+[data-radix-dialog-overlay] {
+  z-index: 9998 !important;
+}
+
+[data-radix-dialog-content] {
+  z-index: 9999 !important;
+}
+
+/* Ensure select dropdowns appear above map */
+[data-radix-select-content] {
+  z-index: 9999 !important;
 }
 
 .custom-pin {
