@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('leaflet/dist/leaflet.css');
 
 @tailwind base;
@@ -6,48 +6,60 @@
 @tailwind utilities;
 
 :root {
-  --primary: 210 100% 56%;
-  --accent: 188 95% 44%;
-  --background: 210 40% 98%;
-  --foreground: 222 84% 5%;
+  /* Modern neutral palette inspired by Linear */
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
   --card: 0 0% 100%;
-  --card-foreground: 222 84% 5%;
+  --card-foreground: 240 10% 3.9%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222 84% 5%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222 47% 11%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 210 100% 56%;
-  --radius: 0.5rem;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 5.9% 10%;
+  --radius: 0.75rem;
+  
+  /* Custom colors for marine app */
+  --blue-50: 240 100% 98%;
+  --blue-500: 217 91% 60%;
+  --blue-600: 221 83% 53%;
+  --blue-700: 224 76% 48%;
+  --emerald-500: 160 84% 39%;
+  --amber-500: 43 96% 56%;
+  --purple-500: 258 90% 66%;
+  --red-500: 0 84% 60%;
+  --green-500: 142 76% 36%;
 }
 
 .dark {
-  --background: 222 84% 5%;
-  --foreground: 210 40% 98%;
-  --card: 222 84% 5%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222 84% 5%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 210 100% 56%;
-  --primary-foreground: 222 84% 5%;
-  --secondary: 217 33% 17%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-  --accent: 217 33% 17%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 63% 31%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217 33% 17%;
-  --input: 217 33% 17%;
-  --ring: 210 100% 56%;
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
 }
 
 * {
@@ -57,17 +69,75 @@
 body {
   color: hsl(var(--foreground));
   background: hsl(var(--background));
-  font-family: Inter, sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Remove old gradient styles */
 .gradient-header {
-  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+  background: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border));
 }
 
+/* Modern button styles */
+.btn-primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: 1px solid hsl(var(--primary));
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: hsl(var(--primary) / 90%);
+}
+
+/* Status colors */
+.status-tilattu {
+  background: hsl(0deg 84% 60%);
+}
+
+.status-tehty {
+  background: hsl(43deg 96% 56%);
+}
+
+.status-laskutetu {
+  background: hsl(217deg 91% 60%);
+}
+
+.status-valmis {
+  background: hsl(142deg 76% 36%);
+}
+
+/* Pin type colors */
+.pin-buoy {
+  background: hsl(160deg 84% 39%);
+}
+
+.pin-pier {
+  background: hsl(43deg 96% 56%);
+}
+
+.pin-transport {
+  background: hsl(258deg 90% 66%);
+}
+
+/* Leaflet overrides */
 .leaflet-container {
   height: 100%;
   width: 100%;
   z-index: 1;
+  border-radius: 0.75rem;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%);
+}
+
+.leaflet-popup-tip {
+  background: white;
 }
 
 /* Ensure dialogs appear above Leaflet maps */
@@ -83,54 +153,37 @@ body {
   z-index: 9999 !important;
 }
 
-/* Ensure select dropdowns appear above map */
 [data-radix-select-content] {
   z-index: 9999 !important;
 }
 
-.custom-pin {
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  border: 2px solid white;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.custom-pin::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: white;
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
 }
 
-.pin-buoy {
-  background: #10b981;
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 30%);
+  border-radius: 3px;
 }
 
-.pin-pier {
-  background: #f59e0b;
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 50%);
 }
 
-.pin-transport {
-  background: #8b5cf6;
+/* Smooth transitions for interactive elements */
+button, input, select, [role="button"] {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.status-tilattu {
-  background: #ef4444;
-}
-
-.status-tehty {
-  background: #f59e0b;
-}
-
-.status-laskutetu {
-  background: #3b82f6;
-}
-
-.status-valmis {
-  background: #10b981;
+/* Focus styles */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
 }

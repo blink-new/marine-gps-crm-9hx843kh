@@ -9,7 +9,7 @@ import { Input } from './components/ui/input'
 import { Label } from './components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
-import { MapPin, List, Plus, Navigation, Anchor, Truck, Search } from 'lucide-react'
+import { MapPin, List, Plus, Navigation, Anchor, Truck, Search, Filter } from 'lucide-react'
 
 interface MarineEvent {
   id: string
@@ -22,10 +22,10 @@ interface MarineEvent {
 }
 
 const statusLabels = {
-  tilattu: 'Tilattu',
-  tehty: 'Tehty',
-  laskutetu: 'Laskutetu',
-  valmis: 'Valmis'
+  tilattu: 'Ordered',
+  tehty: 'Completed',
+  laskutetu: 'Invoiced',
+  valmis: 'Ready'
 }
 
 const typeLabels = {
@@ -124,16 +124,16 @@ function App() {
 
   const createCustomIcon = (type: string, status: string) => {
     const colors = {
-      buoy: '#10b981',
-      pier: '#f59e0b',
-      transport: '#8b5cf6'
+      buoy: '#059669',
+      pier: '#d97706',
+      transport: '#7c3aed'
     }
 
     const statusColors = {
-      tilattu: '#ef4444',
-      tehty: '#f59e0b', 
-      laskutetu: '#3b82f6',
-      valmis: '#10b981'
+      tilattu: '#dc2626',
+      tehty: '#d97706', 
+      laskutetu: '#2563eb',
+      valmis: '#059669'
     }
 
     return new Icon({
@@ -151,76 +151,82 @@ function App() {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      tilattu: 'bg-red-500',
-      tehty: 'bg-yellow-500',
-      laskutetu: 'bg-blue-500',
-      valmis: 'bg-green-500'
+      tilattu: 'bg-red-500 text-white',
+      tehty: 'bg-amber-500 text-white',
+      laskutetu: 'bg-blue-500 text-white',
+      valmis: 'bg-emerald-500 text-white'
     }
-    return colors[status as keyof typeof colors] || 'bg-gray-500'
+    return colors[status as keyof typeof colors] || 'bg-gray-500 text-white'
   }
 
   const getTypeColor = (type: string) => {
     const colors = {
-      buoy: 'bg-emerald-500',
-      pier: 'bg-amber-500',
-      transport: 'bg-purple-500'
+      buoy: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      pier: 'bg-amber-100 text-amber-700 border-amber-200',
+      transport: 'bg-purple-100 text-purple-700 border-purple-200'
     }
-    return colors[type as keyof typeof colors] || 'bg-gray-500'
+    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-700 border-gray-200'
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="gradient-header text-white p-6 shadow-lg">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">Marine GPS CRM</h1>
-          <p className="text-blue-100">Track and manage marine operations with precision</p>
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">Marine GPS CRM</h1>
+              <p className="text-sm text-muted-foreground mt-1">Track and manage marine operations</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-muted-foreground">
+                {filteredEvents.length} events
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto p-6">
+      <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Search and Controls */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <div className="mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="Search events..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="pl-10 h-9 border-0 bg-muted/50 focus:bg-background"
             />
           </div>
-          <div className="text-sm text-gray-600">
-            Total Events: <span className="font-semibold text-blue-600">{filteredEvents.length}</span>
-          </div>
+          <Button 
+            onClick={() => setIsCreateModalOpen(true)}
+            className="h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Event
+          </Button>
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-6">
-            <TabsTrigger value="map" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 max-w-sm h-9 p-1 bg-muted/50">
+            <TabsTrigger value="map" className="flex items-center gap-2 h-7 text-sm">
               <MapPin className="w-4 h-4" />
-              Map View
+              Map
             </TabsTrigger>
-            <TabsTrigger value="list" className="flex items-center gap-2">
+            <TabsTrigger value="list" className="flex items-center gap-2 h-7 text-sm">
               <List className="w-4 h-4" />
-              List View
+              List
             </TabsTrigger>
           </TabsList>
 
           {/* Map View */}
-          <TabsContent value="map" className="space-y-4">
-            <Card className="overflow-hidden">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-blue-600" />
-                  Interactive Map
-                </CardTitle>
-                <p className="text-sm text-gray-600">Click anywhere on the map to create a new event</p>
-              </CardHeader>
+          <TabsContent value="map" className="mt-6">
+            <Card className="border-0 shadow-sm">
               <CardContent className="p-0">
-                <div className="h-[600px] w-full">
+                <div className="h-[600px] w-full rounded-lg overflow-hidden">
                   <MapContainer
                     center={[60.1699, 24.9384]}
                     zoom={13}
@@ -239,22 +245,22 @@ function App() {
                         icon={createCustomIcon(event.type, event.status)}
                       >
                         <Popup>
-                          <div className="p-2 min-w-[200px]">
-                            <h3 className="font-semibold text-lg mb-2">{event.name}</h3>
+                          <div className="p-3 min-w-[200px]">
+                            <h3 className="font-medium text-base mb-3">{event.name}</h3>
                             <div className="space-y-2">
                               <div className="flex items-center gap-2">
-                                <Badge className={`${getTypeColor(event.type)} text-white`}>
+                                <Badge className={getTypeColor(event.type)}>
                                   {typeLabels[event.type]}
                                 </Badge>
-                                <Badge className={`${getStatusColor(event.status)} text-white`}>
+                                <Badge className={getStatusColor(event.status)}>
                                   {statusLabels[event.status]}
                                 </Badge>
                               </div>
-                              <p className="text-sm text-gray-600">
-                                <strong>Coordinates:</strong> {event.latitude.toFixed(4)}, {event.longitude.toFixed(4)}
+                              <p className="text-sm text-muted-foreground">
+                                {event.latitude.toFixed(4)}, {event.longitude.toFixed(4)}
                               </p>
-                              <p className="text-sm text-gray-600">
-                                <strong>Created:</strong> {event.createdAt.toLocaleDateString()}
+                              <p className="text-sm text-muted-foreground">
+                                {event.createdAt.toLocaleDateString()}
                               </p>
                             </div>
                           </div>
@@ -268,41 +274,53 @@ function App() {
           </TabsContent>
 
           {/* List View */}
-          <TabsContent value="list" className="space-y-4">
-            <div className="grid gap-4">
-              {filteredEvents.map((event) => {
-                const TypeIcon = typeIcons[event.type]
-                return (
-                  <Card key={event.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`p-3 rounded-full ${getTypeColor(event.type)} text-white`}>
-                            <TypeIcon className="w-5 h-5" />
+          <TabsContent value="list" className="mt-6">
+            <div className="space-y-3">
+              {filteredEvents.length === 0 ? (
+                <Card className="border-0 shadow-sm">
+                  <CardContent className="flex flex-col items-center justify-center py-12">
+                    <MapPin className="w-12 h-12 text-muted-foreground/50 mb-4" />
+                    <h3 className="font-medium text-lg mb-2">No events found</h3>
+                    <p className="text-sm text-muted-foreground text-center max-w-sm">
+                      {searchTerm ? 'Try adjusting your search terms' : 'Click "Add Event" to create your first marine event'}
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                filteredEvents.map((event) => {
+                  const TypeIcon = typeIcons[event.type]
+                  return (
+                    <Card key={event.id} className="border-0 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-2.5 rounded-lg ${getTypeColor(event.type)} border`}>
+                              <TypeIcon className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <h3 className="font-medium text-base">{event.name}</h3>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {event.latitude.toFixed(4)}, {event.longitude.toFixed(4)}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {event.createdAt.toLocaleDateString()}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-lg">{event.name}</h3>
-                            <p className="text-sm text-gray-600">
-                              {event.latitude.toFixed(4)}, {event.longitude.toFixed(4)}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Created: {event.createdAt.toLocaleDateString()}
-                            </p>
+                          <div className="flex items-center gap-2">
+                            <Badge className={getTypeColor(event.type)}>
+                              {typeLabels[event.type]}
+                            </Badge>
+                            <Badge className={getStatusColor(event.status)}>
+                              {statusLabels[event.status]}
+                            </Badge>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge className={`${getTypeColor(event.type)} text-white`}>
-                            {typeLabels[event.type]}
-                          </Badge>
-                          <Badge className={`${getStatusColor(event.status)} text-white`}>
-                            {statusLabels[event.status]}
-                          </Badge>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+                      </CardContent>
+                    </Card>
+                  )
+                })
+              )}
             </div>
           </TabsContent>
         </Tabs>
@@ -312,32 +330,30 @@ function App() {
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Plus className="w-5 h-5 text-blue-600" />
-              Create New Event
-            </DialogTitle>
+            <DialogTitle className="text-lg font-semibold">Create New Event</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 pt-4">
+          <div className="space-y-4 pt-2">
             {selectedCoords && (
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Coordinates:</strong> {selectedCoords.lat.toFixed(4)}, {selectedCoords.lng.toFixed(4)}
+              <div className="bg-muted/50 p-3 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium">Location:</span> {selectedCoords.lat.toFixed(4)}, {selectedCoords.lng.toFixed(4)}
                 </p>
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="event-name">Event Name</Label>
+              <Label htmlFor="event-name" className="text-sm font-medium">Event Name</Label>
               <Input
                 id="event-name"
                 placeholder="Enter event name..."
                 value={newEventName}
                 onChange={(e) => setNewEventName(e.target.value)}
+                className="h-9"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="event-type">Event Type</Label>
+              <Label htmlFor="event-type" className="text-sm font-medium">Event Type</Label>
               <Select value={newEventType} onValueChange={(value: 'buoy' | 'pier' | 'transport') => setNewEventType(value)}>
-                <SelectTrigger>
+                <SelectTrigger className="h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -362,18 +378,18 @@ function App() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex gap-2 pt-4">
+            <div className="flex gap-3 pt-4">
               <Button 
                 variant="outline" 
                 onClick={() => setIsCreateModalOpen(false)}
-                className="flex-1"
+                className="flex-1 h-9"
               >
                 Cancel
               </Button>
               <Button 
                 onClick={handleCreateEvent}
                 disabled={!newEventName.trim()}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 h-9 bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 Create Event
               </Button>
